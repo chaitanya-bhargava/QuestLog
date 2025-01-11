@@ -10,6 +10,15 @@ import (
 	"github.com/google/uuid"
 )
 
+type GameLog struct {
+	ID        uuid.UUID
+	CreatedAt time.Time
+	UpdatedAt time.Time
+	GameID    int32
+	UserID    uuid.UUID
+	Shelf     string
+}
+
 type User struct {
 	ID        uuid.UUID
 	CreatedAt time.Time

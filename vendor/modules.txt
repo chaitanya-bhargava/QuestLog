@@ -1,3 +1,6 @@
+# github.com/dimuska139/rawg-sdk-go/v3 v3.0.0
+## explicit; go 1.15
+github.com/dimuska139/rawg-sdk-go/v3
 # github.com/go-chi/chi v1.5.5
 ## explicit; go 1.16
 github.com/go-chi/chi
@@ -15,3 +18,6 @@ github.com/joho/godotenv
 github.com/lib/pq
 github.com/lib/pq/oid
 github.com/lib/pq/scram
+# golang.org/x/time v0.0.0-20200630173020-3af7569d3a1e
+## explicit
+golang.org/x/time/rate
