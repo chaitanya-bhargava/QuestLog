@@ -9,13 +9,19 @@ import (
 
 	"github.com/chaitanya-bhargava/QuestLog/internal/database"
 	"github.com/dimuska139/rawg-sdk-go/v3"
-	"github.com/google/uuid"
 )
 
-func (apiCfg *apiConfig) handlerCreateGameLog(w http.ResponseWriter, r *http.Request,user database.User,rawgCfg rawg.Config){
+func GenreParser(genres []*rawg.Genre) []string {
+	genreNames := make([]string,0)
+	for _,genre := range genres{
+		genreNames=append(genreNames,genre.Name)
+	}
+	return genreNames
+}
+
+func (apiCfg *apiConfig) handlerCreateGame(w http.ResponseWriter, r *http.Request,user database.User, rawgCfg rawg.Config){
 	type parameters struct {
-		GameID int `json:"game_id"`
-		Shelf string `json:"shelf"`
+		ID int `json:"id"`
 	}
 
 	decoder := json.NewDecoder(r.Body)
@@ -32,14 +38,16 @@ func (apiCfg *apiConfig) handlerCreateGameLog(w http.ResponseWriter, r *http.Req
     
     ctx, cancel := context.WithTimeout(context.Background(), time.Duration(time.Millisecond*10000))
 	defer cancel()
-    data,  err := rawgClient.GetGame(ctx, params.GameID)
+    data,  err := rawgClient.GetGame(ctx, params.ID)
 	if err != nil {
 		respondWithError(w,400,fmt.Sprint("Error fetching games: ",err))
 		return
 	}
 
-	_, err = apiCfg.DB.CreateGame(r.Context(),database.CreateGameParams{
-		ID: int32(params.GameID),
+
+
+	game, err := apiCfg.DB.CreateGame(r.Context(),database.CreateGameParams{
+		ID: int32(params.ID),
 		CreatedAt: time.Now().UTC(),
 		UpdatedAt: time.Now().UTC(),
 		Name: data.Name,
@@ -53,19 +61,5 @@ func (apiCfg *apiConfig) handlerCreateGameLog(w http.ResponseWriter, r *http.Req
 		return
 	}
 
-	gameLog, err := apiCfg.DB.CreateGameLog(r.Context(),database.CreateGameLogParams{
-		ID: uuid.New(),
-		CreatedAt: time.Now().UTC(),
-		UpdatedAt: time.Now().UTC(),
-		GameID: int32(params.GameID),
-		UserID: user.ID,
-		Shelf: params.Shelf,
-	})
-
-	if err!= nil {
-		respondWithError(w, 400, fmt.Sprint("Error creating game_log:", err))
-		return
-	}
-
-	respondWithJSON(w,201,databaseGameLogtoGameLog(gameLog))
+	respondWithJSON(w,201,databaseGametoGame(game))
 }

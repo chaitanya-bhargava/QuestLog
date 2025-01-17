@@ -57,9 +57,10 @@ func main() {
 	v1Router.Post("/users",apiCfg.handlerCreateUser)
 	v1Router.Get("/users",apiCfg.middlewareAuth(apiCfg.handlerGetUser))
 	v1Router.Get("/search",middlewareRawg(handlerSearchGames))
-	v1Router.Post("/gameLog",apiCfg.middlewareAuth(apiCfg.handlerCreateGameLog))
+	v1Router.Post("/gameLog",apiCfg.middlewareAuthRawg(apiCfg.handlerCreateGameLog))
 	v1Router.Get("/games",middlewareRawg(handlerGetGamesByGenre))
 	v1Router.Get("/genres",middlewareRawg(handlerGetGenres))
+	v1Router.Post("/game",apiCfg.middlewareAuthRawg(apiCfg.handlerCreateGame))
 
 	router.Mount("/v1",v1Router)
 

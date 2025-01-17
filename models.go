@@ -44,3 +44,25 @@ func databaseGameLogtoGameLog(dbGameLog database.GameLog) GameLog {
 		Shelf: dbGameLog.Shelf,
 	}
 }
+
+type Game struct {
+	ID int `json:"id"`
+	CreatedAt   time.Time `json:"created_at"`
+	UpdatedAt   time.Time `json:"updated_at"`
+	Name string `json:"name"`
+	Genres []string `json:"genre"`
+	Image string `json:"image"`
+	ReleaseDate time.Time `json:"release_date"`
+}
+
+func databaseGametoGame(dbGame database.Game) Game {
+	return Game{
+		ID: int(dbGame.ID),
+		CreatedAt: time.Now().UTC(),
+		UpdatedAt: time.Now().UTC(),
+		Name: dbGame.Name,
+		Genres: dbGame.Genres,
+		Image: dbGame.Image,
+		ReleaseDate: dbGame.ReleaseDate,
+	}
+}
