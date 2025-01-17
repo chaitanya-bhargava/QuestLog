@@ -58,6 +58,8 @@ func main() {
 	v1Router.Get("/users",apiCfg.middlewareAuth(apiCfg.handlerGetUser))
 	v1Router.Get("/search",middlewareRawg(handlerSearchGames))
 	v1Router.Post("/gameLog",apiCfg.middlewareAuth(apiCfg.handlerCreateGameLog))
+	v1Router.Get("/games",middlewareRawg(handlerGetGamesByGenre))
+	v1Router.Get("/genres",middlewareRawg(handlerGetGenres))
 
 	router.Mount("/v1",v1Router)
 
