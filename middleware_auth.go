@@ -12,13 +12,13 @@ type authHandler func(http.ResponseWriter, *http.Request, database.User)
 
 func (apiCfg *apiConfig) middlewareAuth(handler authHandler) func(http.ResponseWriter, *http.Request) {
 	return func(w http.ResponseWriter,r *http.Request) {
-		apiKey, err := auth.GetAPIKey(r.Header)
+		userID, err := auth.GetUserID(r.Header)
 		if err != nil {
 			respondWithError(w, 403, fmt.Sprint("Auth error: ",err))
 			return
 		}
 
-		user, err := apiCfg.DB.GetUserByAPIKey(r.Context(),apiKey)
+		user, err := apiCfg.DB.GetUserByID(r.Context(),userID)
 		if err != nil {
 			respondWithError(w, 400, fmt.Sprint("Couldn't fetch user: ",err))
 			return

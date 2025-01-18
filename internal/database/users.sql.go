@@ -8,21 +8,30 @@ package database
 import (
 	"context"
 	"time"
-
-	"github.com/google/uuid"
 )
 
 const createUser = `-- name: CreateUser :one
-INSERT INTO users(id,created_at,updated_at,name,api_key)
-VALUES ($1,$2,$3,$4,encode(sha256(random()::text::bytea), 'hex'))
-RETURNING id, created_at, updated_at, name, api_key
+INSERT INTO users(id,created_at,updated_at,name,email,avatarURL,provider,nickname,access_token,access_token_secret,refresh_token,expires_at,id_token)
+VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13)
+ON CONFLICT(id)
+DO UPDATE SET updated_at=CURRENT_TIMESTAMP
+RETURNING id, created_at, updated_at, name, email, avatarurl, provider, nickname, access_token, access_token_secret, refresh_token, expires_at, id_token
 `
 
 type CreateUserParams struct {
-	ID        uuid.UUID
-	CreatedAt time.Time
-	UpdatedAt time.Time
-	Name      string
+	ID                string
+	CreatedAt         time.Time
+	UpdatedAt         time.Time
+	Name              string
+	Email             string
+	Avatarurl         string
+	Provider          string
+	Nickname          string
+	AccessToken       string
+	AccessTokenSecret string
+	RefreshToken      string
+	ExpiresAt         time.Time
+	IDToken           string
 }
 
 func (q *Queries) CreateUser(ctx context.Context, arg CreateUserParams) (User, error) {
@@ -31,6 +40,15 @@ func (q *Queries) CreateUser(ctx context.Context, arg CreateUserParams) (User, e
 		arg.CreatedAt,
 		arg.UpdatedAt,
 		arg.Name,
+		arg.Email,
+		arg.Avatarurl,
+		arg.Provider,
+		arg.Nickname,
+		arg.AccessToken,
+		arg.AccessTokenSecret,
+		arg.RefreshToken,
+		arg.ExpiresAt,
+		arg.IDToken,
 	)
 	var i User
 	err := row.Scan(
@@ -38,24 +56,65 @@ func (q *Queries) CreateUser(ctx context.Context, arg CreateUserParams) (User, e
 		&i.CreatedAt,
 		&i.UpdatedAt,
 		&i.Name,
-		&i.ApiKey,
+		&i.Email,
+		&i.Avatarurl,
+		&i.Provider,
+		&i.Nickname,
+		&i.AccessToken,
+		&i.AccessTokenSecret,
+		&i.RefreshToken,
+		&i.ExpiresAt,
+		&i.IDToken,
 	)
 	return i, err
 }
 
 const getUserByAPIKey = `-- name: GetUserByAPIKey :one
-SELECT id, created_at, updated_at, name, api_key FROM users WHERE api_key=$1
+SELECT id, created_at, updated_at, name, email, avatarurl, provider, nickname, access_token, access_token_secret, refresh_token, expires_at, id_token FROM users WHERE access_token=$1
 `
 
-func (q *Queries) GetUserByAPIKey(ctx context.Context, apiKey string) (User, error) {
-	row := q.db.QueryRowContext(ctx, getUserByAPIKey, apiKey)
+func (q *Queries) GetUserByAPIKey(ctx context.Context, accessToken string) (User, error) {
+	row := q.db.QueryRowContext(ctx, getUserByAPIKey, accessToken)
 	var i User
 	err := row.Scan(
 		&i.ID,
 		&i.CreatedAt,
 		&i.UpdatedAt,
 		&i.Name,
-		&i.ApiKey,
+		&i.Email,
+		&i.Avatarurl,
+		&i.Provider,
+		&i.Nickname,
+		&i.AccessToken,
+		&i.AccessTokenSecret,
+		&i.RefreshToken,
+		&i.ExpiresAt,
+		&i.IDToken,
+	)
+	return i, err
+}
+
+const getUserByID = `-- name: GetUserByID :one
+SELECT id, created_at, updated_at, name, email, avatarurl, provider, nickname, access_token, access_token_secret, refresh_token, expires_at, id_token FROM users WHERE id=$1
+`
+
+func (q *Queries) GetUserByID(ctx context.Context, id string) (User, error) {
+	row := q.db.QueryRowContext(ctx, getUserByID, id)
+	var i User
+	err := row.Scan(
+		&i.ID,
+		&i.CreatedAt,
+		&i.UpdatedAt,
+		&i.Name,
+		&i.Email,
+		&i.Avatarurl,
+		&i.Provider,
+		&i.Nickname,
+		&i.AccessToken,
+		&i.AccessTokenSecret,
+		&i.RefreshToken,
+		&i.ExpiresAt,
+		&i.IDToken,
 	)
 	return i, err
 }

@@ -63,3 +63,19 @@ func (apiCfg *apiConfig) handlerCreateGame(w http.ResponseWriter, r *http.Reques
 
 	respondWithJSON(w,201,databaseGametoGame(game))
 }
+
+func (apiCfg *apiConfig) handlerGetGamesByGameLog(w http.ResponseWriter, r *http.Request,user database.User) {
+	shelf := r.URL.Query().Get("shelf")
+	
+	games,err := apiCfg.DB.GetGamesByGameLog(r.Context(),database.GetGamesByGameLogParams{
+		UserID: user.ID,
+		Shelf: shelf,
+	})
+
+	if err!= nil {
+		respondWithError(w, 400, fmt.Sprint("Error fetching games:", err))
+		return
+	}
+
+	respondWithJSON(w,200,databaseGamestoGames(games))
+}

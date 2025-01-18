@@ -25,14 +25,22 @@ type GameLog struct {
 	CreatedAt time.Time
 	UpdatedAt time.Time
 	GameID    int32
-	UserID    uuid.UUID
+	UserID    string
 	Shelf     string
 }
 
 type User struct {
-	ID        uuid.UUID
-	CreatedAt time.Time
-	UpdatedAt time.Time
-	Name      string
-	ApiKey    string
+	ID                string
+	CreatedAt         time.Time
+	UpdatedAt         time.Time
+	Name              string
+	Email             string
+	Avatarurl         string
+	Provider          string
+	Nickname          string
+	AccessToken       string
+	AccessTokenSecret string
+	RefreshToken      string
+	ExpiresAt         time.Time
+	IDToken           string
 }

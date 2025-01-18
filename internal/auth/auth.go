@@ -6,7 +6,7 @@ import (
 	"strings"
 )
 
-func GetAPIKey(headers http.Header) (string, error) {
+func GetUserID(headers http.Header) (string, error) {
 	val := headers.Get("Authorization")
 	if val == "" {
 		return "", errors.New("no authentication info found")
@@ -17,7 +17,7 @@ func GetAPIKey(headers http.Header) (string, error) {
 		return "", errors.New("malformed auth header")
 	}
 
-	if vals[0] != "ApiKey" {
+	if vals[0] != "UserID" {
 		return "", errors.New("malformed auth header")
 	}
 	return strings.TrimSpace(vals[1]), nil
