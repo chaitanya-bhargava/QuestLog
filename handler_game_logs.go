@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
+	"strconv"
 	"time"
 
 	"github.com/chaitanya-bhargava/QuestLog/internal/database"
@@ -68,4 +69,56 @@ func (apiCfg *apiConfig) handlerCreateGameLog(w http.ResponseWriter, r *http.Req
 	}
 
 	respondWithJSON(w,201,databaseGameLogtoGameLog(gameLog))
+}
+
+func (apiCfg apiConfig) handlerDeleteGameLogByGameID(w http.ResponseWriter, r *http.Request,user database.User) {
+	game_id,err := strconv.Atoi(r.URL.Query().Get("game_id"))
+	if err != nil {
+		respondWithError(w,400,fmt.Sprint("Error processing search query: ",err))
+		return
+	}
+	
+	err = apiCfg.DB.DeleteGameLogByGameID(r.Context(),database.DeleteGameLogByGameIDParams{
+		GameID: int32(game_id),
+		UserID: user.ID,
+	})
+
+	if err!= nil {
+		if err.Error() == "sql: no rows in result set" {
+			respondWithJSON(w,200,GameLog{
+				Shelf: "NA",
+			})
+			return
+		}
+		respondWithError(w, 400, fmt.Sprint("Error fetching game log:", err))
+		return
+	}
+
+	respondWithJSON(w,200,struct{}{})
+}
+
+func (apiCfg apiConfig) handlerGetGameLogByGameID(w http.ResponseWriter, r *http.Request,user database.User) {
+	game_id,err := strconv.Atoi(r.URL.Query().Get("game_id"))
+	if err != nil {
+		respondWithError(w,400,fmt.Sprint("Error processing search query: ",err))
+		return
+	}
+	
+	game_log,err := apiCfg.DB.GetGameLogByGameID(r.Context(),database.GetGameLogByGameIDParams{
+		UserID: user.ID,
+		GameID: int32(game_id),
+	})
+
+	if err!= nil {
+		if err.Error() == "sql: no rows in result set" {
+			respondWithJSON(w,200,GameLog{
+				Shelf: "NA",
+			})
+			return
+		}
+		respondWithError(w, 400, fmt.Sprint("Error fetching game log:", err))
+		return
+	}
+
+	respondWithJSON(w,200,databaseGameLogtoGameLog(game_log))
 }

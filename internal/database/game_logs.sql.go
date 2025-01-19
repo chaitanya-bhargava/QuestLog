@@ -49,3 +49,40 @@ func (q *Queries) CreateGameLog(ctx context.Context, arg CreateGameLogParams) (G
 	)
 	return i, err
 }
+
+const deleteGameLogByGameID = `-- name: DeleteGameLogByGameID :exec
+DELETE FROM game_logs WHERE game_id=$1 AND user_id=$2
+`
+
+type DeleteGameLogByGameIDParams struct {
+	GameID int32
+	UserID string
+}
+
+func (q *Queries) DeleteGameLogByGameID(ctx context.Context, arg DeleteGameLogByGameIDParams) error {
+	_, err := q.db.ExecContext(ctx, deleteGameLogByGameID, arg.GameID, arg.UserID)
+	return err
+}
+
+const getGameLogByGameID = `-- name: GetGameLogByGameID :one
+SELECT id, created_at, updated_at, game_id, user_id, shelf FROM game_logs WHERE game_id=$1 AND user_id=$2
+`
+
+type GetGameLogByGameIDParams struct {
+	GameID int32
+	UserID string
+}
+
+func (q *Queries) GetGameLogByGameID(ctx context.Context, arg GetGameLogByGameIDParams) (GameLog, error) {
+	row := q.db.QueryRowContext(ctx, getGameLogByGameID, arg.GameID, arg.UserID)
+	var i GameLog
+	err := row.Scan(
+		&i.ID,
+		&i.CreatedAt,
+		&i.UpdatedAt,
+		&i.GameID,
+		&i.UserID,
+		&i.Shelf,
+	)
+	return i, err
+}
