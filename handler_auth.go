@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"net/http"
+	"os"
 	"time"
 
 	"github.com/chaitanya-bhargava/QuestLog/internal/database"
@@ -58,7 +59,10 @@ func (apiCfg *apiConfig) handlerCompleteAuth(w http.ResponseWriter, r *http.Requ
         return
     }
 
-	frontendURL := "http://localhost:3000" 
+	frontendURL := os.Getenv("FRONTEND_URL")
+    if frontendURL == "" {
+        respondWithError(w,http.StatusInternalServerError,"No redirect URL in environment")
+    }
     http.Redirect(w, r, frontendURL, http.StatusTemporaryRedirect)
 }
 
