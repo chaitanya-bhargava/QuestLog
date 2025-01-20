@@ -59,8 +59,13 @@ func main() {
 
 	gothic.Store = store
 
+	frontendURL := os.Getenv("FRONTEND_URL")
+    if frontendURL == "" {
+        log.Fatal("FRONTEND_URL is not found in the environment")
+    }
+
 	goth.UseProviders(
-		google.New(os.Getenv("GOOGLE_CLIENT_ID"), os.Getenv("GOOGLE_CLIENT_SECRET"), "http://localhost:"+portString+"/v1/auth/google/callback","email","profile"),
+		google.New(os.Getenv("GOOGLE_CLIENT_ID"), os.Getenv("GOOGLE_CLIENT_SECRET"), frontendURL+portString+"/v1/auth/google/callback","email","profile"),
 	)
 
 	router := chi.NewRouter()
