@@ -49,7 +49,7 @@ func main() {
 	}
 
 	maxAge := 86400 * 30
-	isProd := false      // Set to true in production (when using HTTPS)
+	isProd := true     // Set to true in production (when using HTTPS)
 
 	store := sessions.NewCookieStore([]byte(key))
 	store.MaxAge(maxAge)
@@ -65,7 +65,7 @@ func main() {
     }
 
 	goth.UseProviders(
-		google.New(os.Getenv("GOOGLE_CLIENT_ID"), os.Getenv("GOOGLE_CLIENT_SECRET"), publicURL+portString+"/v1/auth/google/callback","email","profile"),
+		google.New(os.Getenv("GOOGLE_CLIENT_ID"), os.Getenv("GOOGLE_CLIENT_SECRET"), publicURL+"/v1/auth/google/callback","email","profile"),
 	)
 
 	router := chi.NewRouter()
