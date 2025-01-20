@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"log"
 	"net/http"
 	"os"
 	"time"
@@ -25,7 +26,7 @@ func (apiCfg *apiConfig) handlerCompleteAuth(w http.ResponseWriter, r *http.Requ
         return
     }
 
-    fmt.Printf("User: %+v\n", user)
+    log.Printf("User: %+v\n", user)
 
     dbUser, err := apiCfg.DB.CreateUser(r.Context(), database.CreateUserParams{
         ID:                user.UserID,
@@ -47,14 +48,14 @@ func (apiCfg *apiConfig) handlerCompleteAuth(w http.ResponseWriter, r *http.Requ
         return
     }
 
-    fmt.Printf("DB User: %+v\n", dbUser)
+    log.Printf("DB User: %+v\n", dbUser)
 
     session, err := gothic.Store.Get(r, "session-name")
     if err != nil {
         respondWithError(w, http.StatusInternalServerError, fmt.Sprintf("Error retrieving session: %v", err))
         return
     }
-    fmt.Printf("Session before save: %+v\n", session.Values)
+    log.Printf("Session before save: %+v\n", session.Values)
 
     session.Values["user_id"] = dbUser.ID
     err = session.Save(r, w)
@@ -62,7 +63,7 @@ func (apiCfg *apiConfig) handlerCompleteAuth(w http.ResponseWriter, r *http.Requ
         respondWithError(w, http.StatusInternalServerError, fmt.Sprintf("Error saving session: %v", err))
         return
     }
-    fmt.Printf("Session after save: %+v\n", session.Values)
+    log.Printf("Session after save: %+v\n", session.Values)
 
     frontendURL := os.Getenv("FRONTEND_URL")
     if frontendURL == "" {
