@@ -65,7 +65,7 @@ func main() {
     }
 
 	goth.UseProviders(
-		google.New(os.Getenv("GOOGLE_CLIENT_ID"), os.Getenv("GOOGLE_CLIENT_SECRET"), publicURL+":"+portString+"/v1/auth/google/callback","email","profile"),
+		google.New(os.Getenv("GOOGLE_CLIENT_ID"), os.Getenv("GOOGLE_CLIENT_SECRET"), publicURL+"/v1/auth/google/callback","email","profile"),
 	)
 
 	router := chi.NewRouter()
