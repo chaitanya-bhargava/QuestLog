@@ -17,6 +17,7 @@ func (apiCfg *apiConfig) handlerCreateGameLog(w http.ResponseWriter, r *http.Req
 	type parameters struct {
 		GameID int `json:"game_id"`
 		Shelf string `json:"shelf"`
+		Rating int `json:"rating"`
 	}
 
 	decoder := json.NewDecoder(r.Body)
@@ -61,6 +62,7 @@ func (apiCfg *apiConfig) handlerCreateGameLog(w http.ResponseWriter, r *http.Req
 		GameID: int32(params.GameID),
 		UserID: user.ID,
 		Shelf: params.Shelf,
+		Rating: int32(params.Rating),
 	})
 
 	if err!= nil {

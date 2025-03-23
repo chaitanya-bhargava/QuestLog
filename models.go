@@ -48,6 +48,7 @@ type GameLog struct {
 	GameID int `json:"game_id"`
 	UserID string `json:"user_id"`
 	Shelf string `json:"shelf"`
+	Rating int `json:"rating"`
 }
 
 func databaseGameLogtoGameLog(dbGameLog database.GameLog) GameLog {
@@ -58,6 +59,7 @@ func databaseGameLogtoGameLog(dbGameLog database.GameLog) GameLog {
 		GameID: int(dbGameLog.GameID),
 		UserID: dbGameLog.UserID,
 		Shelf: dbGameLog.Shelf,
+		Rating: int(dbGameLog.Rating),
 	}
 }
 

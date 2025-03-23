@@ -91,6 +91,7 @@ func main() {
 	v1Router.Get("/games", middlewareRawg(handlerGetGamesByGenre))
 	v1Router.Get("/games/gameLog",apiCfg.middlewareAuth(apiCfg.handlerGetGamesByGameLog))
 	v1Router.Post("/game", apiCfg.middlewareAuthRawg(apiCfg.handlerCreateGame))
+	v1Router.Get("/game", middlewareRawg(handlerGetGameByID))
 	v1Router.Get("/auth/{provider}", handlerBeginAuth)
 	v1Router.Get("/auth/{provider}/callback", apiCfg.handlerCompleteAuth)
 	v1Router.Get("/auth/logout",handlerLogout)

@@ -13,11 +13,11 @@ import (
 )
 
 const createGameLog = `-- name: CreateGameLog :one
-INSERT INTO game_logs(id,created_at,updated_at,game_id,user_id,shelf)
-VALUES ($1,$2,$3,$4,$5,$6)
+INSERT INTO game_logs(id,created_at,updated_at,game_id,user_id,shelf,rating)
+VALUES ($1,$2,$3,$4,$5,$6,$7)
 ON CONFLICT(game_id,user_id)
-DO UPDATE SET updated_at=CURRENT_TIMESTAMP,shelf=$6
-RETURNING id, created_at, updated_at, game_id, user_id, shelf
+DO UPDATE SET updated_at=CURRENT_TIMESTAMP,shelf=$6,rating=$7
+RETURNING id, created_at, updated_at, game_id, user_id, shelf, rating
 `
 
 type CreateGameLogParams struct {
@@ -27,6 +27,7 @@ type CreateGameLogParams struct {
 	GameID    int32
 	UserID    string
 	Shelf     string
+	Rating    int32
 }
 
 func (q *Queries) CreateGameLog(ctx context.Context, arg CreateGameLogParams) (GameLog, error) {
@@ -37,6 +38,7 @@ func (q *Queries) CreateGameLog(ctx context.Context, arg CreateGameLogParams) (G
 		arg.GameID,
 		arg.UserID,
 		arg.Shelf,
+		arg.Rating,
 	)
 	var i GameLog
 	err := row.Scan(
@@ -46,6 +48,7 @@ func (q *Queries) CreateGameLog(ctx context.Context, arg CreateGameLogParams) (G
 		&i.GameID,
 		&i.UserID,
 		&i.Shelf,
+		&i.Rating,
 	)
 	return i, err
 }
@@ -65,7 +68,7 @@ func (q *Queries) DeleteGameLogByGameID(ctx context.Context, arg DeleteGameLogBy
 }
 
 const getGameLogByGameID = `-- name: GetGameLogByGameID :one
-SELECT id, created_at, updated_at, game_id, user_id, shelf FROM game_logs WHERE game_id=$1 AND user_id=$2
+SELECT id, created_at, updated_at, game_id, user_id, shelf, rating FROM game_logs WHERE game_id=$1 AND user_id=$2
 `
 
 type GetGameLogByGameIDParams struct {
@@ -83,6 +86,7 @@ func (q *Queries) GetGameLogByGameID(ctx context.Context, arg GetGameLogByGameID
 		&i.GameID,
 		&i.UserID,
 		&i.Shelf,
+		&i.Rating,
 	)
 	return i, err
 }
