@@ -7,6 +7,7 @@ CREATE TABLE game_logs (
     game_id INT NOT NULL REFERENCES games(id) ON DELETE CASCADE,
     user_id TEXT NOT NULL REFERENCES users(id) ON DELETE CASCADE,
     shelf CHAR NOT NULL DEFAULT('W'),
+    rating INT NOT NULL DEFAULT(0),
     UNIQUE(game_id,user_id)
 );
 

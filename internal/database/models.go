@@ -27,6 +27,7 @@ type GameLog struct {
 	GameID    int32
 	UserID    string
 	Shelf     string
+	Rating    int32
 }
 
 type User struct {
