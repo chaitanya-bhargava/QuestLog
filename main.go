@@ -97,6 +97,9 @@ func main() {
 	v1Router.Get("/auth/logout",handlerLogout)
 	v1Router.Get("/auth/me", apiCfg.handlerGetCurrentUser)
 
+	v1Router.Get("/users/{username}/profile", apiCfg.handlerGetPublicProfile)
+	v1Router.Get("/users/{username}/games", apiCfg.handlerGetPublicGamesByShelf)
+
 	router.Mount("/v1", v1Router)
 
 	srv := &http.Server{

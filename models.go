@@ -8,36 +8,54 @@ import (
 )
 
 type User struct {
-	ID                string `json:"id"`
+	ID                string    `json:"id"`
 	CreatedAt         time.Time `json:"created_at"`
 	UpdatedAt         time.Time `json:"updated_at"`
-	Name              string `json:"name"`
-	Email             string `json:"email"`
-	Avatarurl         string `json:"avatar_url"`
-	Provider          string `json:"provider"`
-	Nickname          string `json:"nickname"`
-	AccessToken       string `json:"access_token"`
-	AccessTokenSecret string `json:"access_token_secret"`
-	RefreshToken      string `json:"refresh_token"`
+	Name              string    `json:"name"`
+	Email             string    `json:"email"`
+	Avatarurl         string    `json:"avatar_url"`
+	Provider          string    `json:"provider"`
+	Nickname          string    `json:"nickname"`
+	AccessToken       string    `json:"access_token"`
+	AccessTokenSecret string    `json:"access_token_secret"`
+	RefreshToken      string    `json:"refresh_token"`
 	ExpiresAt         time.Time `json:"expires_at"`
-	IDToken           string `json:"id_token"`
+	IDToken           string    `json:"id_token"`
+	Username          string    `json:"username"`
 }
 
 func databaseUsertoUser(dbUser database.User) User {
 	return User{
-		ID: dbUser.ID,            
-		CreatedAt: dbUser.CreatedAt,    
-		UpdatedAt: dbUser.UpdatedAt,
-		Name: dbUser.Name,
-		Email: dbUser.Email,
-		Avatarurl: dbUser.Avatarurl,
-		Provider: dbUser.Provider,
-		Nickname: dbUser.Nickname,
-		AccessToken: dbUser.AccessToken,
+		ID:                dbUser.ID,
+		CreatedAt:         dbUser.CreatedAt,
+		UpdatedAt:         dbUser.UpdatedAt,
+		Name:              dbUser.Name,
+		Email:             dbUser.Email,
+		Avatarurl:         dbUser.Avatarurl,
+		Provider:          dbUser.Provider,
+		Nickname:          dbUser.Nickname,
+		AccessToken:       dbUser.AccessToken,
 		AccessTokenSecret: dbUser.AccessTokenSecret,
-		RefreshToken: dbUser.RefreshToken,
-		ExpiresAt: dbUser.ExpiresAt,
-		IDToken: dbUser.IDToken,
+		RefreshToken:      dbUser.RefreshToken,
+		ExpiresAt:         dbUser.ExpiresAt,
+		IDToken:           dbUser.IDToken,
+		Username:          dbUser.Username,
+	}
+}
+
+type PublicProfile struct {
+	ID        string `json:"id"`
+	Name      string `json:"name"`
+	Avatarurl string `json:"avatar_url"`
+	Username  string `json:"username"`
+}
+
+func databaseUserToPublicProfile(dbUser database.GetUserByUsernameRow) PublicProfile {
+	return PublicProfile{
+		ID:        dbUser.ID,
+		Name:      dbUser.Name,
+		Avatarurl: dbUser.Avatarurl,
+		Username:  dbUser.Username,
 	}
 }
 

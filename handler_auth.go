@@ -5,6 +5,7 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"strings"
 	"time"
 
 	"github.com/chaitanya-bhargava/QuestLog/internal/database"
@@ -28,6 +29,8 @@ func (apiCfg *apiConfig) handlerCompleteAuth(w http.ResponseWriter, r *http.Requ
 
     log.Printf("User: %+v\n", user)
 
+    username := strings.Split(user.Email, "@")[0]
+
     dbUser, err := apiCfg.DB.CreateUser(r.Context(), database.CreateUserParams{
         ID:                user.UserID,
         CreatedAt:         time.Now().UTC(),
@@ -42,6 +45,7 @@ func (apiCfg *apiConfig) handlerCompleteAuth(w http.ResponseWriter, r *http.Requ
         RefreshToken:      user.RefreshToken,
         ExpiresAt:         user.ExpiresAt,
         IDToken:           user.IDToken,
+        Username:          username,
     })
     if err != nil {
         respondWithError(w, 400, fmt.Sprint("Error creating user:", err))
