@@ -21,7 +21,7 @@ require (
 	github.com/gorilla/sessions v1.1.1
 	golang.org/x/oauth2 v0.17.0 // indirect
 	google.golang.org/appengine v1.6.8 // indirect
-	google.golang.org/protobuf v1.33.0 // indirect
+	google.golang.org/protobuf v1.36.11 // indirect
 )
 
 require (
